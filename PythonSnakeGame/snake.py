@@ -25,17 +25,31 @@ BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
 BROWN = (124, 56, 0)
 
-
+# 점수
+score = 0
 # pygeme.display.set_mode((화면 너비, 화면 높이)) 화면 객체 반환
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-pygame.display.set_caption('Snake and Apple') # title 설정
+pygame.display.set_caption('SnakeGame') # title 설정
 
 # 화면
+# 시작 화면
+def draw_main(screen) :
+    background = pygame.Rect((0, 0), (SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.draw.rect(screen, WHITE, background)
+    # 시작버튼
+    # startButton = pygame.Rect((SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2), (BLOCK_SIZE * 11, BLOCK_SIZE * 3))
+    # pygame.draw.rect(screen, GREEN, startButton)
+    # 시작글씨
+    font = pygame.font.Font('freesansbold.ttf', BLOCK_SIZE * 3) # 폰트 설정
+    text = font.render('start!', True, BLACK) # 글자 설정 render('출력', True, 글자색, 배경색)
+    textRect = text.get_rect()
+    textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+    screen.blit(text, textRect)
 
-"""게임 배경"""
+# 게임 배경
 def draw_background(screen) :
-    # 화면 전체에 하얀 사각형을 그려준다.
+    # 화면 전체에 강과 땅을 그려준다.
     # pygame.Rect((x, y), (사각형 너비, 사각형 높이))
     background = pygame.Rect((0, 0), (SCREEN_WIDTH, SCREEN_HEIGHT))
     # pygame.draw.rect(사각형을 그릴 화면, 색, 사각형 정보)
@@ -52,6 +66,7 @@ def draw_block(screen, color, position) :
     # 화면크기가 400*400, 블록이 20*20이기 때문에 화면은 가로, 세로 20칸이 된다. x, y를 이를 이용해 설정한것
     block = pygame.Rect((position[0] * BLOCK_SIZE, position[1] * BLOCK_SIZE), (BLOCK_SIZE, BLOCK_SIZE))
     pygame.draw.rect(screen, color, block)
+
 
 # 블록 위치 = 뱀이 처음 나올 위치
 block_position = [9, 9]
@@ -72,9 +87,11 @@ DIRECTION_ON_KEY = {
 # 뱀
 class Snake :
     color = GREEN
+    # speed = 0.3
     def __init__(self) :
         self.positions = [(11, 11)] # 뱀의 위치. 뱀이 길어질수록 이 배열도 길어질것이다.
         self.direction = 'down' # 뱀의 방향
+        self.speed = 0.3
 
     def draw(self, screen) :
         # 뱀그리기. 사과를 먹을수록 길어져야한다.
@@ -115,6 +132,11 @@ class Snake :
             self.positions.append((x - 1, y))
         elif self.direction == 'right' :
             self.positions.append((x + 1, y))
+        # 뱀의 속도를 높여준다.
+        if len(self.positions) > 15  and len(self.positions) < 25  :
+            self.speed = 0.2
+        elif len(self.positions) > 25 :
+            self.speed = 0.1        
 
 # 사과
 class Apple :
@@ -130,6 +152,7 @@ class Apple :
 class Board :
     width = 20
     height = 20
+    
     def __init__(self) :
         self.snake = Snake()
         self.apple = Apple()
@@ -156,10 +179,21 @@ class Board :
         if self.snake.positions[0] == self.apple.position:
             self.snake.grow()
             self.put_new_apple()
-    
+            return 1
+        return 1
+    # 점수를 표시해주는 메소드.
+    def write_score(self, screen) :
+        score = 'score : {}'.format(len(self.snake.positions) - 1)
+        # 상단에 점수표시
+        font = pygame.font.Font('freesansbold.ttf', BLOCK_SIZE) # 폰트 설정
+        text = font.render(score, True, BLACK, WHITE) # 글자 설정 render('출력', True, 글자색, 배경색)
+        textRect = text.get_rect()
+        textRect.center = (SCREEN_WIDTH // 2, BLOCK_SIZE // 2)
+        screen.blit(text, textRect)    
     
 # 게임판 인스턴스 생성
 board = Board()
+
 
 # 종료를 누르기 전까진 화면을 계속 보여준다.
 while True :
@@ -180,13 +214,15 @@ while True :
 
     # datetime.now() - last_moved_time을 이용하여 마지막으로 버튼을 누른지 0.3초가 지났다면
     # timedelta() 두 날짜(일,주 등등)나 시간(초, 분 등등)의 차이를 알려준다.
-    if timedelta(seconds = 0.3) <= datetime.now() - last_moved_time :
-        board.process_turn()
+    if timedelta(seconds = board.snake.speed) <= datetime.now() - last_moved_time :
+        play = board.process_turn()
         last_moved_time = datetime.now() # 마지막으로 움직인 시간 알려줌
-            
+
+    #draw_main(screen)
     draw_background(screen) # 배경그리기
     board.draw(screen) # 화면판에 게임판그리기
-
+    board.write_score(screen)
+    
     # 화면 새로고침
     pygame.display.update()
 
