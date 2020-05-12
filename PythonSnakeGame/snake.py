@@ -236,36 +236,3 @@ while True :
     # 화면 새로고침
     pygame.display.update()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
