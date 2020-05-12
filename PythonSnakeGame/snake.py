@@ -3,6 +3,8 @@ import random # 랜덤으로 사과 띄움
 import time
 from datetime import datetime # datetime에서 datetime객체를 import
 from datetime import timedelta # datetime에서 timedelta객체를 import
+from tkinter import tix
+import tkinter.messagebox
 
 pygame.init() # pygame 초기화
 
@@ -174,7 +176,10 @@ class Board :
         self.snake.crawl()
         # 뱀머리가 몸이나 벽에 부딛히면 게임이 끝난다.
         if self.snake.positions[0] in self.snake.positions[1:] or self.snake.positions[0] in EDGE:
-            exit()
+            # exit() 알림창이뜸
+            # pygame.display.quit() 아예 종료됨
+            Play_Again()
+            
         # 움직이다가 사과 == 뱀머리 이면 뱀을 길게만들고 새 사과를 만든다.
         if self.snake.positions[0] == self.apple.position:
             self.snake.grow()
@@ -190,10 +195,15 @@ class Board :
         textRect = text.get_rect()
         textRect.center = (SCREEN_WIDTH // 2, BLOCK_SIZE // 2)
         screen.blit(text, textRect)    
-    
+
+# 재시작용 알람창
+def Play_Again() :
+    tkinter.messagebox.askokcancel('Play Again?', 'Play Again?')
+
+
+"""반복문 + 게임판을 함수에 넣고 시작버튼을 누르면 반복되고, 종료를 누르면 종료되도록?"""
 # 게임판 인스턴스 생성
 board = Board()
-
 
 # 종료를 누르기 전까진 화면을 계속 보여준다.
 while True :
