@@ -176,9 +176,8 @@ class Board :
         self.snake.crawl()
         # 뱀머리가 몸이나 벽에 부딛히면 게임이 끝난다.
         if self.snake.positions[0] in self.snake.positions[1:] or self.snake.positions[0] in EDGE:
-            # exit() 알림창이뜸
-            # pygame.display.quit() 아예 종료됨
-            Play_Again()
+            play = False
+            return play
             
         # 움직이다가 사과 == 뱀머리 이면 뱀을 길게만들고 새 사과를 만든다.
         if self.snake.positions[0] == self.apple.position:
@@ -200,39 +199,57 @@ class Board :
 def Play_Again() :
     tkinter.messagebox.askokcancel('Play Again?', 'Play Again?')
 
+# 재시작?
+replay = True
+# 게임실행
+play = True
 
 """반복문 + 게임판을 함수에 넣고 시작버튼을 누르면 반복되고, 종료를 누르면 종료되도록?"""
-# 게임판 인스턴스 생성
-board = Board()
+while replay :
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-# 종료를 누르기 전까진 화면을 계속 보여준다.
-while True :
-    # pygame.event.get() 발생한 이벤트 목록을 읽는다.
-    events = pygame.event.get()
+    # 게임판 인스턴스 생성
+    board = Board()
+
+    # 종료를 누르기 전까진 화면을 계속 보여준다.
+    while play :
+        # pygame.event.get() 발생한 이벤트 목록을 읽는다.
+        events = pygame.event.get()
     
-    # 반복문을 이용하여 이벤트 목록을 본다.
-    for event in events :
-        # 종료 이벤트가 발생하면 종료한다.
-        if event.type == pygame.QUIT :
-            exit()
-        # 어떤 버튼을 눌렀다면 아래처럼 행동한다.
-        if event.type == pygame.KEYDOWN :
-            # 만약 눌린 버튼이 화살표키라면 블록의 방향을 화살표 키에 맞게 바꾼다.
-            if event.key in DIRECTION_ON_KEY :
-                # dictionary
-                board.snake.turn(DIRECTION_ON_KEY[event.key])
-
-    # datetime.now() - last_moved_time을 이용하여 마지막으로 버튼을 누른지 0.3초가 지났다면
-    # timedelta() 두 날짜(일,주 등등)나 시간(초, 분 등등)의 차이를 알려준다.
-    if timedelta(seconds = board.snake.speed) <= datetime.now() - last_moved_time :
-        play = board.process_turn()
-        last_moved_time = datetime.now() # 마지막으로 움직인 시간 알려줌
-
-    #draw_main(screen)
-    draw_background(screen) # 배경그리기
-    board.draw(screen) # 화면판에 게임판그리기
-    board.write_score(screen)
+        # 반복문을 이용하여 이벤트 목록을 본다.
+        for event in events :
+            # 종료 이벤트가 발생하면 종료한다.
+            if event.type == pygame.QUIT :
+                exit()
+            # 어떤 버튼을 눌렀다면 아래처럼 행동한다.
+            if event.type == pygame.KEYDOWN :
+                # 만약 눌린 버튼이 화살표키라면 블록의 방향을 화살표 키에 맞게 바꾼다.
+                if event.key in DIRECTION_ON_KEY :
+                    # dictionary
+                    board.snake.turn(DIRECTION_ON_KEY[event.key])
     
-    # 화면 새로고침
-    pygame.display.update()
-
+        # datetime.now() - last_moved_time을 이용하여 마지막으로 버튼을 누른지 0.3초가 지났다면
+        # timedelta() 두 날짜(일,주 등등)나 시간(초, 분 등등)의 차이를 알려준다.
+        if timedelta(seconds = board.snake.speed) <= datetime.now() - last_moved_time :
+            play = board.process_turn()
+            last_moved_time = datetime.now() # 마지막으로 움직인 시간 알려줌
+    
+        #draw_main(screen)
+        draw_background(screen) # 배경그리기
+        board.draw(screen) # 화면판에 게임판그리기
+        board.write_score(screen)
+        
+        # 화면 새로고침
+        pygame.display.update()
+    
+    # 게임이 종료되면 play == False가 되며 while을 빠져나온다.'''
+    '''이부분에 재시작알림창 넣기'''
+    if replay :
+        # 만약 재시작을 한다고 했다면 play = True가 되며 다시 게임이 시작된다.
+        play = True
+        continue
+    # 하지만 재시작을 하지 않는다 했다면 반복문은 종료된다.
+    break
+# 게임도 종료된다.
+exit()
+    
