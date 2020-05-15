@@ -195,36 +195,40 @@ class Board :
         textRect.center = (SCREEN_WIDTH // 2, BLOCK_SIZE // 2)
         screen.blit(text, textRect)    
 
+class Play_Again :
+    replay = True    
+    def __init__ (self, replay) :
+        # 윈도우 창 생성
+        replay_window = Tk()
+        # 윈도우 창 타이틀 지정
+        replay_window.title('Game Over')
+        # 윈도우 창의 크기 지정
+        replay_window.geometry('230x100')
+        # 윈도우 창 크기변경 가능?
+        replay_window.resizable(0, 0)
+        # 라벨
+        show_text = Label(replay_window, text='~Game Over~\n다시하시겠습니까?').place(x = 60, y = 15)
+        # 버튼
+        replay_btn = Button(replay_window, text='Play Again', command = lambda: (self.Play(replay), replay_window.destroy())).place(x = 40, y = 60)
+        exit_btn = Button(replay_window, text='Exit', command = lambda: (self.End(replay), replay_window.destroy())).place(x = 150, y = 60)
+        # 윈도우 창 유지
+        replay_window.mainloop()
+        
+    def Play(self, replay) : 
+        self.replay = True
+        print(replay)
+        return self.replay
+
+    def End(self, replay) :
+        self.replay = False
+        print(replay)
+        return self.replay
+
 # 재시작?
 replay = True
 # 게임실행
 play = True
 
-# 재시작용 알람창
-def Play_Again() :
-    # 윈도우 창 생성
-    replay_window = Tk()
-    # 윈도우 창 타이틀 지정
-    replay_window.title('Game Over')
-    # 윈도우 창의 크기 지정
-    replay_window.geometry('230x100')
-    # 윈도우 창 크기변경 가능?
-    replay_window.resizable(0, 0)
-    # 라벨
-    show_text = Label(replay_window, text='~Game Over~\n다시하시겠습니까?').place(x = 60, y = 15)
-    # 버튼
-    replay_btn = Button(replay_window, text='Play Again', command = lambda: (Play(replay_window), replay_window.destroy())).place(x = 40, y = 60)
-    exit_btn = Button(replay_window, text='Exit', command = lambda: (End(replay_window), replay_window.destroy())).place(x = 150, y = 60)
-    # 윈도우 창 유지
-    replay_window.mainloop()
-
-def Play(replay_window) :
-    replay = True
-    return replay
-
-def End(replay_window) :
-    replay = False
-    return replay
 
 """반복문 + 게임판을 함수에 넣고 시작버튼을 누르면 반복되고, 종료를 누르면 종료되도록?"""
 while replay :
@@ -242,7 +246,8 @@ while replay :
         for event in events :
             # 종료 이벤트가 발생하면 종료한다.
             if event.type == pygame.QUIT :
-                exit()
+                # exit()
+                pygame.quit()
             # 어떤 버튼을 눌렀다면 아래처럼 행동한다.
             if event.type == pygame.KEYDOWN :
                 # 만약 눌린 버튼이 화살표키라면 블록의 방향을 화살표 키에 맞게 바꾼다.
@@ -263,17 +268,16 @@ while replay :
         
         # 화면 새로고침
         pygame.display.update()
-    
-    # 게임이 종료되면 play == False가 되며 while을 빠져나온다.    
-    Play_Again()
-    print(play)
-    print(replay)
-    if replay :
-        # 만약 재시작을 한다고 했다면 play = True가 되며 다시 게임이 시작된다.
-        play = True
-        continue
-    # 하지만 재시작을 하지 않는다 했다면 반복문은 종료된다.
-    break
-# 게임도 종료된다.
-exit()
+    if not play :
+        # 게임이 종료되면 play == False가 되며 while을 빠져나온다.
+        play_again = Play_Again(replay)
+        replay = play_again.replay
+        if replay :
+            # 만약 재시작을 한다고 했다면 play = True가 되며 다시 게임이 시작된다.
+            play = True
+            continue
+        # 하지만 재시작을 하지 않는다 했다면 반복문은 종료된다.
+        break
+# 게임도 종료된다. exit()
+pygame.quit()
     
