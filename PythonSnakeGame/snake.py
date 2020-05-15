@@ -1,10 +1,10 @@
 import pygame
 import random # 랜덤으로 사과 띄움
 import time
-from datetime import datetime # datetime에서 datetime객체를 import
-from datetime import timedelta # datetime에서 timedelta객체를 import
-from tkinter import tix
-import tkinter.messagebox
+from datetime import datetime
+from datetime import timedelta
+from tkinter import *
+# import tkinter.messagebox
 
 pygame.init() # pygame 초기화
 
@@ -195,14 +195,36 @@ class Board :
         textRect.center = (SCREEN_WIDTH // 2, BLOCK_SIZE // 2)
         screen.blit(text, textRect)    
 
-# 재시작용 알람창
-def Play_Again() :
-    tkinter.messagebox.askokcancel('Play Again?', 'Play Again?')
-
 # 재시작?
 replay = True
 # 게임실행
 play = True
+
+# 재시작용 알람창
+def Play_Again() :
+    # 윈도우 창 생성
+    replay_window = Tk()
+    # 윈도우 창 타이틀 지정
+    replay_window.title('Game Over')
+    # 윈도우 창의 크기 지정
+    replay_window.geometry('230x100')
+    # 윈도우 창 크기변경 가능?
+    replay_window.resizable(0, 0)
+    # 라벨
+    show_text = Label(replay_window, text='~Game Over~\n다시하시겠습니까?').place(x = 60, y = 15)
+    # 버튼
+    replay_btn = Button(replay_window, text='Play Again', command = lambda: (Play(replay_window), replay_window.destroy())).place(x = 40, y = 60)
+    exit_btn = Button(replay_window, text='Exit', command = lambda: (End(replay_window), replay_window.destroy())).place(x = 150, y = 60)
+    # 윈도우 창 유지
+    replay_window.mainloop()
+
+def Play(replay_window) :
+    replay = True
+    return replay
+
+def End(replay_window) :
+    replay = False
+    return replay
 
 """반복문 + 게임판을 함수에 넣고 시작버튼을 누르면 반복되고, 종료를 누르면 종료되도록?"""
 while replay :
@@ -242,8 +264,10 @@ while replay :
         # 화면 새로고침
         pygame.display.update()
     
-    # 게임이 종료되면 play == False가 되며 while을 빠져나온다.'''
-    '''이부분에 재시작알림창 넣기'''
+    # 게임이 종료되면 play == False가 되며 while을 빠져나온다.    
+    Play_Again()
+    print(play)
+    print(replay)
     if replay :
         # 만약 재시작을 한다고 했다면 play = True가 되며 다시 게임이 시작된다.
         play = True
