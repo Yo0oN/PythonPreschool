@@ -22,6 +22,7 @@ for w in range(0, 22) :
 # 색
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
+SNAKEGREEN = (29, 139, 21)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
@@ -40,14 +41,21 @@ def draw_main(screen) :
     background = pygame.Rect((0, 0), (SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.draw.rect(screen, WHITE, background)
     # 시작버튼
-    startButton = pygame.Rect((SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2), (BLOCK_SIZE * 11, BLOCK_SIZE * 4))
+    startButton = pygame.Rect((SCREEN_WIDTH // 22 * 7, SCREEN_HEIGHT // 2 + BLOCK_SIZE / 2), (BLOCK_SIZE * 8, BLOCK_SIZE * 3))
     pygame.draw.rect(screen, GREEN, startButton)
     # 시작글씨
-    font = pygame.font.Font('freesansbold.ttf', BLOCK_SIZE * 3) # 폰트 설정
+    font = pygame.font.Font('freesansbold.ttf', BLOCK_SIZE * 2) # 폰트 설정
     text = font.render('start!', True, BLACK) # 글자 설정 render('출력', True, 글자색, 배경색)
     textRect = text.get_rect()
     textRect.center = (((SCREEN_WIDTH // 4) + (BLOCK_SIZE * 5.5)), ((SCREEN_HEIGHT // 2) + (BLOCK_SIZE * 2)))
     screen.blit(text, textRect)
+    
+    # 제목
+    title_font = pygame.font.Font('freesansbold.ttf', BLOCK_SIZE * 3) # 폰트 설정
+    title_text = title_font.render('Snake Game', True, SNAKEGREEN) # 글자 설정 render('출력', True, 글자색, 배경색)
+    title_textRect = title_text.get_rect()
+    title_textRect.center = (((SCREEN_WIDTH // 4) + (BLOCK_SIZE * 5.5)), (SCREEN_HEIGHT // 3))
+    screen.blit(title_text, title_textRect)
 
 # 게임 배경
 def draw_background(screen) :
