@@ -40,13 +40,13 @@ def draw_main(screen) :
     background = pygame.Rect((0, 0), (SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.draw.rect(screen, WHITE, background)
     # 시작버튼
-    # startButton = pygame.Rect((SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2), (BLOCK_SIZE * 11, BLOCK_SIZE * 3))
-    # pygame.draw.rect(screen, GREEN, startButton)
+    startButton = pygame.Rect((SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2), (BLOCK_SIZE * 11, BLOCK_SIZE * 4))
+    pygame.draw.rect(screen, GREEN, startButton)
     # 시작글씨
     font = pygame.font.Font('freesansbold.ttf', BLOCK_SIZE * 3) # 폰트 설정
     text = font.render('start!', True, BLACK) # 글자 설정 render('출력', True, 글자색, 배경색)
     textRect = text.get_rect()
-    textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+    textRect.center = (((SCREEN_WIDTH // 4) + (BLOCK_SIZE * 5.5)), ((SCREEN_HEIGHT // 2) + (BLOCK_SIZE * 2)))
     screen.blit(text, textRect)
 
 # 게임 배경
@@ -233,51 +233,13 @@ play = True
 """반복문 + 게임판을 함수에 넣고 시작버튼을 누르면 반복되고, 종료를 누르면 종료되도록?"""
 while replay :
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    draw_main(screen)
+    pygame.display.update()
 
     # 게임판 인스턴스 생성
     board = Board()
 
-    # 종료를 누르기 전까진 화면을 계속 보여준다.
-    while play :
-        # pygame.event.get() 발생한 이벤트 목록을 읽는다.
-        events = pygame.event.get()
-    
-        # 반복문을 이용하여 이벤트 목록을 본다.
-        for event in events :
-            # 종료 이벤트가 발생하면 종료한다.
-            if event.type == pygame.QUIT :
-                # exit()
-                pygame.quit()
-            # 어떤 버튼을 눌렀다면 아래처럼 행동한다.
-            if event.type == pygame.KEYDOWN :
-                # 만약 눌린 버튼이 화살표키라면 블록의 방향을 화살표 키에 맞게 바꾼다.
-                if event.key in DIRECTION_ON_KEY :
-                    # dictionary
-                    board.snake.turn(DIRECTION_ON_KEY[event.key])
-    
-        # datetime.now() - last_moved_time을 이용하여 마지막으로 버튼을 누른지 0.3초가 지났다면
-        # timedelta() 두 날짜(일,주 등등)나 시간(초, 분 등등)의 차이를 알려준다.
-        if timedelta(seconds = board.snake.speed) <= datetime.now() - last_moved_time :
-            play = board.process_turn()
-            last_moved_time = datetime.now() # 마지막으로 움직인 시간 알려줌
-    
-        #draw_main(screen)
-        draw_background(screen) # 배경그리기
-        board.draw(screen) # 화면판에 게임판그리기
-        board.write_score(screen)
-        
-        # 화면 새로고침
-        pygame.display.update()
-    if not play :
-        # 게임이 종료되면 play == False가 되며 while을 빠져나온다.
-        play_again = Play_Again(replay)
-        replay = play_again.replay
-        if replay :
-            # 만약 재시작을 한다고 했다면 play = True가 되며 다시 게임이 시작된다.
-            play = True
-            continue
-        # 하지만 재시작을 하지 않는다 했다면 반복문은 종료된다.
-        break
+   
 # 게임도 종료된다. exit()
 pygame.quit()
     
