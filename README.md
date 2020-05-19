@@ -9,3 +9,6 @@
 ## PythonSnakeGame
 
 Python으로 만든 Snake 게임이 있습니다.
+
+![snakegame](./PythonSnakeGame/snake.jpg)
+(메인화면, 게임중, game over)
