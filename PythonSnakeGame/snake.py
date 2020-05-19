@@ -28,6 +28,13 @@ for s in range(0, 8) :
     START.append((SCREEN_WIDTH // 22 * 7 + BLOCK_SIZE * s, SCREEN_HEIGHT // 2 + BLOCK_SIZE // 2 + BLOCK_SIZE))
     START.append((SCREEN_WIDTH // 22 * 7 + BLOCK_SIZE * s, SCREEN_HEIGHT // 2 + BLOCK_SIZE // 2 + BLOCK_SIZE * 2))
 
+# 종료 버튼 영역
+EXIT = []
+for s in range(0, 8) :
+    EXIT.append((SCREEN_WIDTH // 22 * 7 + BLOCK_SIZE * s, SCREEN_HEIGHT // 3 * 2 + BLOCK_SIZE // 2))
+    EXIT.append((SCREEN_WIDTH // 22 * 7 + BLOCK_SIZE * s, SCREEN_HEIGHT // 3 * 2 + BLOCK_SIZE // 2 + BLOCK_SIZE))
+    EXIT.append((SCREEN_WIDTH // 22 * 7 + BLOCK_SIZE * s, SCREEN_HEIGHT // 3 * 2 + BLOCK_SIZE // 2 + BLOCK_SIZE * 2))
+
 # 색
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
@@ -36,6 +43,8 @@ RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
 BROWN = (124, 56, 0)
+LIGHTGRAY = (234, 234, 234)
+DARKGRAY = (140, 140, 140)
 
 # 점수
 score = 0
@@ -59,13 +68,22 @@ def draw_main(screen) :
     textRect = text.get_rect()
     textRect.center = (int(((SCREEN_WIDTH // 4) + (BLOCK_SIZE * 5.5))), ((SCREEN_HEIGHT // 2) + (BLOCK_SIZE * 2)))
     screen.blit(text, textRect)
-    
     # 제목
     title_font = pygame.font.Font('freesansbold.ttf', BLOCK_SIZE * 3) # 폰트 설정
     title_text = title_font.render('Snake Game', True, SNAKEGREEN) # 글자 설정 render('출력', True, 글자색, 배경색)
     title_textRect = title_text.get_rect()
     title_textRect.center = (int(((SCREEN_WIDTH // 4) + (BLOCK_SIZE * 5.5))), (SCREEN_HEIGHT // 3))
     screen.blit(title_text, title_textRect)
+    # 종료버튼
+    for exit in EXIT :
+        exitButton = pygame.Rect((exit[0], exit[1]), (BLOCK_SIZE, BLOCK_SIZE))
+        pygame.draw.rect(screen, LIGHTGRAY, exitButton)
+    # 종료글씨
+    exit_font = pygame.font.Font('freesansbold.ttf', BLOCK_SIZE * 2) # 폰트 설정
+    exit_text = exit_font.render('exit', True, DARKGRAY) # 글자 설정 render('출력', True, 글자색, 배경색)
+    exit_textRect = exit_text.get_rect()
+    exit_textRect.center = (int(((SCREEN_WIDTH // 4) + (BLOCK_SIZE * 5.5))), (SCREEN_HEIGHT // 3 * 2  + BLOCK_SIZE * 2))
+    screen.blit(exit_text, exit_textRect)
 
 # 게임 배경
 def draw_background(screen) :
@@ -283,7 +301,6 @@ replay = True
 play = True
 
 
-"""반복문 + 게임판을 함수에 넣고 시작버튼을 누르면 반복되고, 종료를 누르면 종료되도록?"""
 while replay :
     if first == True :
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -298,12 +315,18 @@ while replay :
                     first = False
                     play_game(play, last_moved_time)
                     play = False
-
+                # exit 버튼 범위
+                if pygame.mouse.get_pos()[0] in range(EXIT[0][0], EXIT[-1][0]) and pygame.mouse.get_pos()[1] in range(EXIT[0][1], EXIT[-1][1]) :
+                    play = False
+                    replay = False
+                    first = False
     else :
         play_game(play, last_moved_time)
         play = False
-    
-    if not play :
+    # 종료버튼을 누르면 게임종료
+    if not play and not replay and not first :
+        break
+    if not play and replay:
         # 게임이 종료되면 play == False가 되며 while을 빠져나온다.
         play_again = Play_Again(replay)
         replay = play_again.replay
@@ -318,4 +341,3 @@ while replay :
    
 # 게임도 종료된다. exit()
 pygame.quit()
-    
