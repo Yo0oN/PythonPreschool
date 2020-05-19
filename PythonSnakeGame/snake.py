@@ -293,11 +293,11 @@ while replay :
         for event in events :
             # 마우스 up 이벤트
             if event.type == pygame.MOUSEBUTTONUP :
-                print(pygame.mouse.get_pos())
-                
-                first = False
-                play_game(play, last_moved_time)
-                play = False
+                # start 버튼 범위
+                if pygame.mouse.get_pos()[0] in range(START[0][0], START[-1][0]) and pygame.mouse.get_pos()[1] in range(START[0][1], START[-1][1]) :
+                    first = False
+                    play_game(play, last_moved_time)
+                    play = False
 
     else :
         play_game(play, last_moved_time)
