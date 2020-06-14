@@ -58,6 +58,65 @@ class NodeMgmt :
                 self.current_node = self.current_node.right
         # 모든 노드를 봤는데 없다면 False 
         return False
+    # 이진 탐색 트리에서 노드 삭제하기
+    def delete(self, value) :
+        searched = False # 값이 있는지 알려주는 변수
+        self.current_node = self.head # 삭제할 노드
+        self.parent = self.head # 삭제 노드의 부모 노드
+        while self.current_node :
+            # 현재 노드가 찾으려는 노드면 반복문 중단
+            if self.current_node.value == value :
+                searched = True
+                break
+            # 현재 노드가 찾으려는 값보다 크다면 왼쪽으로 가야함.
+            elif value < self.current_node.value :
+                # 왼쪽에 자식노드가 있다면 현재노드를 자식노드로 바꿔주고, 부모노드를 현재노드로 해준다.
+                if self.current_node.left != None :
+                    self.parent = self.current_node
+                    self.current_node = self.current_node.left
+                # 자식노드가 없다면 찾는값이 없으니 중단
+                else :
+                    break
+                # 사실 elif안쪽의 if줄, else, break줄 없어도 상관없이 current_node가 None이 되는순간 반복문이 멈추니 없어도 된다.
+            # 현재 노드가 찾으려는 값보다 작다면 오른쪽으로 가야함.
+            else :
+                # 오른쪽에 자식노드가 있다면 현재노드를 자식노드로 바꿔주고, 부모노드를 현재노드로 해준다.
+                if self.current_node.right != None :
+                    self.parent = self.current_node
+                    self.current_node = self.current_node.right
+                # 자식노드가 없다면 찾는값이 없으니 중단
+                else :
+                    break
+        # 만약 삭제하려는 값이 없다면 여기서 함수를 중단한다.
+        if searched = False :
+            return False
+        # 삭제값이 있다면 계속 진행
+        # 삭제하려는 노드가 리프노드일 경우
+        if self.current_node.left == None and self.current_node.right == None :
+            # 삭제하려는노드가 부모의 왼쪽노드라면
+            if value < self.parent.value :
+                self.parent.left = None
+            # 삭제하려는 노드가 부모의 오른쪽이라면
+            else :
+                self.parent.right = None
+        # 삭제하려는 노드의 왼쪽에 자식이 있다면
+        if self.current_node.left != None and self.current_node.right == None :
+            # 삭제하려는노드가 부모의 왼쪽노드라면
+            if value < self.parent.value :
+                self.parent.left = self.current_node.left
+            # 삭제하려는 노드가 부모의 오른쪽이라면
+            else :
+                self.parent.right = self.current_node.right
+        # 삭제하려는 노드의 오른쪽에 자식이 있다면
+        if self.current_node.left == None and self.current_node.right != None :
+            # 삭제하려는노드가 부모의 왼쪽노드라면
+            if value < self.parent.value :
+                self.parent.left = self.current_node.left
+            # 삭제하려는 노드가 부모의 오른쪽이라면
+            else :
+                self.parent.right = self.current_node.right
+
+
 
 head = Node(1)
 BST = NodeMgmt(head)
